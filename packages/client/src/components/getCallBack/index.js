@@ -7,7 +7,7 @@ import useCustomizedSnackbars from '../../hook/useSnackbar';
 import FormCallBack from './FormCallBack';
 
 const GetCallBack = ({ home, m }) => {
-  const [snackbarMessage, setSnackbarMessage] = useState({ status: '', message: '' });
+  const [snackbarMessage, setSnackbarMessage] = useState({ status: 'success', message: '' });
   const { t } = useTranslation();
   const { snackbars, handleSnackbarsClick } = useCustomizedSnackbars(snackbarMessage.status, snackbarMessage.message);
 

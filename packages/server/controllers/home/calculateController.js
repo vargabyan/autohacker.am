@@ -1,4 +1,4 @@
-const { mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 const AdminCalculatorAuctionSettings = require('../../models/adminCalculatorAuctionSettings');
 const AdminCalculatorSelectLocationSettings = require('../../models/adminCalculatorSelectLocationSettings');
 const AdminCalculatorFullElectricCarsSettings = require('../../models/adminCalculatorFullElectricCarsSettings');

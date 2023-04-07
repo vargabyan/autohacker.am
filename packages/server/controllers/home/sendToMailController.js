@@ -4,9 +4,9 @@ const fs = require('fs');
 const nodemailer = require('nodemailer');
 const transporter = require('../../mail/mailConfig');
 
-const { UPLOAD_FOLDER, MAIL_FROM, MAIL_TO } = process.env;
+const { UPLOAD_FOLDER_GET_CALL_BACK_FILE, MAIL_FROM, MAIL_TO } = process.env;
 const upload = multer({
-  dest: UPLOAD_FOLDER,
+  dest: UPLOAD_FOLDER_GET_CALL_BACK_FILE,
   limits: {
     fileSize: 1000000,
   },
@@ -44,7 +44,8 @@ exports.postFileSandToMail = [
     // console.log(file);
     // console.log('====================================');
 
-    response.json('ok');
+    response.json({ fileSandToMail: file });
+    next();
   },
 ];
 

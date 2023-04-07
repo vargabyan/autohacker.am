@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-import { Grid, Typography, Button, TextField, FormHelperText } from '@mui/material';
-import { Box } from '@mui/system';
-import Fab from '@mui/material/Fab';
+import React, { useEffect, useState } from 'react';
+import { Grid, Typography, Button, TextField, FormHelperText, IconButton, Box } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -9,12 +7,28 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import useHttpRequest from '../../hook/useHttpRequest/useHttpRequest';
 
 const data = ['facebook', 'instagrem'];
 
-const AddSocialNetworktitems = ({ auth, language }) => {
+const validationSchema = yup.object({
+  site: yup.string().min(1).required(),
+  url: yup.string().url().required(),
+});
+
+const initialValues = {
+  site: '',
+  url: '',
+};
+
+const AddSocialNetworktitems = () => {
+  const auth = useSelector((state) => state.authenticationReducer.value);
+  const { t } = useTranslation();
   const [switchState, setSwitchState] = useState(false);
   const [open, setOpen] = useState(false);
+  const { responsetData, httpRequest } = useHttpRequest();
 
   const handleClose = () => {
     setOpen(false);
@@ -24,22 +38,11 @@ const AddSocialNetworktitems = ({ auth, language }) => {
     setOpen(true);
   };
 
-  const validationSchema = yup.object({
-    socialNetwork: yup
-      .string('Enter your social network')
-      .min(1, 'social network should be of minimum 1 characters length')
-      .required('social network is required'),
-    url: yup.string('Enter your url').url('Enter a valid url').required('url is required'),
-  });
-
   const formik = useFormik({
-    initialValues: {
-      socialNetwork: '',
-      url: '',
-    },
+    initialValues,
     validationSchema,
     onSubmit: (values) => {
-      console.cog(JSON.stringify(values, null, 2));
+      httpRequest('post', '/admin/social-network', JSON.stringify(values));
     },
   });
 
@@ -47,12 +50,7 @@ const AddSocialNetworktitems = ({ auth, language }) => {
     setSwitchState(!switchState);
 
     if (param === 'cancel') {
-      formik.values.socialNetwork = '';
-      formik.values.url = '';
-      formik.errors.socialNetwork = '';
-      formik.errors.url = '';
-      formik.touched.socialNetwork = '';
-      formik.touched.url = '';
+      formik.resetForm();
     }
   };
 
@@ -62,43 +60,38 @@ const AddSocialNetworktitems = ({ auth, language }) => {
     </MenuItem>
   ));
 
+  useEffect(() => {
+    if (responsetData.data) {
+      formik.resetForm();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [responsetData.data]);
+
   const formForAdd = (
-    <Box
-      sx={{
-        background: 'white',
-        padding: '16px',
-        borderRadius: '5px',
-        maxWidth: '200px',
-      }}
-    >
+    <Box className='formBox'>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel
-                size='small'
-                error={Boolean(formik.touched.socialNetwork) && Boolean(formik.errors.socialNetwork)}
-              >
-                social network
+              <InputLabel size='small' error={Boolean(formik.touched.site) && Boolean(formik.errors.site)}>
+                {t('footer.social_networks.select_social_networks')}
               </InputLabel>
               <Select
-                label='social network'
-                name='socialNetwork'
+                label={t('footer.social_networks.select_social_networks')}
+                name='site'
                 size='small'
                 open={open}
                 onClose={handleClose}
                 onOpen={handleOpen}
-                value={formik.values.socialNetwork}
-                error={Boolean(formik.touched.socialNetwork) && Boolean(formik.errors.socialNetwork)}
+                value={formik.values.site}
+                error={Boolean(formik.touched.site) && Boolean(formik.errors.site)}
                 onChange={formik.handleChange}
               >
-                <MenuItem value=''>
-                  <em>None</em>
-                </MenuItem>
+                <MenuItem value='' />
                 {menuItemArr}
               </Select>
-              <FormHelperText error={Boolean(formik.touched.socialNetwork) && Boolean(formik.errors.socialNetwork)}>
-                {formik.touched.socialNetwork && formik.errors.socialNetwork}
+              <FormHelperText error={Boolean(formik.touched.site) && Boolean(formik.errors.site)}>
+                {formik.touched.site && formik.errors.site}
               </FormHelperText>
             </FormControl>
           </Grid>
@@ -107,7 +100,7 @@ const AddSocialNetworktitems = ({ auth, language }) => {
               fullWidth
               size='small'
               name='url'
-              label='url'
+              label={t('footer.social_networks.url')}
               value={formik.values.url}
               onChange={formik.handleChange}
               error={Boolean(formik.touched.url) && Boolean(formik.errors.url)}
@@ -122,21 +115,14 @@ const AddSocialNetworktitems = ({ auth, language }) => {
               color='primary'
               variant='contained'
               fullWidth
-              style={{ background: '#eb1921' }}
+              className='buttonColor'
             >
-              cancel
+              {t('footer.button.cancel')}
             </Button>
           </Grid>
           <Grid item xs={6} md={12} lg={6}>
-            <Button
-              size='small'
-              color='primary'
-              variant='contained'
-              fullWidth
-              type='submit'
-              style={{ background: '#eb1921' }}
-            >
-              Submit
+            <Button size='small' color='primary' variant='contained' fullWidth type='submit' className='buttonColor'>
+              {t('footer.button.save')}
             </Button>
           </Grid>
         </Grid>
@@ -144,30 +130,21 @@ const AddSocialNetworktitems = ({ auth, language }) => {
     </Box>
   );
 
-  let defineLanguage;
-  if (language === 'EN') {
-    defineLanguage = 'Add social network';
-  } else if (language === 'RU') {
-    defineLanguage = 'Добавить соцсеть ';
-  } else {
-    defineLanguage = 'Ավելացնել սոցիալական ցանց';
-  }
-
   const buttonAdd = (
     <Grid container justifyContent='center' spacing={2}>
       <Grid item xs={12}>
         <Grid container justifyContent='center'>
           <Grid item>
-            <Typography variant='p'>{defineLanguage}</Typography>
+            <Typography variant='p'>{t('footer.social_networks.add_social_network_items')}</Typography>
           </Grid>
         </Grid>
       </Grid>
       <Grid item>
         <Grid container justifyContent='center'>
           <Grid item xs={12}>
-            <Fab onClick={handelClick} color='primary' aria-label='add' size='small' style={{ background: '#eb1921' }}>
-              <AddIcon />
-            </Fab>
+            <IconButton onClick={handelClick} aria-label='add' size='small'>
+              <AddIcon fontSize='inherit' className='iconButtons' />
+            </IconButton>
           </Grid>
         </Grid>
       </Grid>

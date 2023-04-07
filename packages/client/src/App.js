@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Calculator from './components/calculator';
 import Home from './components/home';
 import Services from './components/services';
@@ -15,11 +15,13 @@ import ShowProduct from './components/show_product';
 import Layout from './Layout';
 import useHttpRequest from './hook/useHttpRequest/useHttpRequest';
 import { login } from './reducers/authentication';
+import CreatePersonContacts from './components/our_team/createPersoncontacts';
 
 const App = () => {
   const { i18n } = useTranslation();
   const { language } = i18n;
   const { responsetData, httpRequest } = useHttpRequest();
+  const auth = useSelector((state) => state.authenticationReducer.value);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -41,6 +43,14 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [responsetData.data]);
 
+  const createPersonContactsRoute = auth ? (
+    <Route path='create_person_contacts' element={<CreatePersonContacts />}>
+      <Route path=':person' element={<CreatePersonContacts />} />
+      <Route path='*' element={<Navigate to='/404' />} />
+    </Route>
+  ) : undefined;
+  const adminRoute = !auth ? <Route path='admin' element={<Authentication />} /> : undefined;
+
   return (
     <BrowserRouter>
       <Routes>
@@ -54,7 +64,8 @@ const App = () => {
           <Route path='our_team' element={<OurTeam />} />
           <Route path='services' element={<Services />} />
           <Route path='order_a_call' element={<GetCallBack />} />
-          <Route path='admin' element={<Authentication />} />
+          {adminRoute}
+          {createPersonContactsRoute}
           <Route path='*' element={<Navigate to='/404' />} />
         </Route>
         <Route path='/404' element={<Error />} />

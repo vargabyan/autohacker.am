@@ -1,4 +1,4 @@
-const { mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 const AdminCalculatorFullElectricCarsSettings = require('../../models/adminCalculatorFullElectricCarsSettings');
 
 const { ID_ADMIN_CALCULATOR_FULL_ELECTRIC_CARS_SETTINGS } = process.env;

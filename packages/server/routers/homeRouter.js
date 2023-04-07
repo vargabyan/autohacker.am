@@ -6,13 +6,29 @@ const {
   getCalculation,
 } = require('../controllers/home/calculateController');
 const {
+  getContacts,
+  getContact,
+} = require('../controllers/home/contactsController');
+const {
   postSendToMail,
   postFileSandToMail,
 } = require('../controllers/home/sendToMailController');
+const getSocialNetworks = require('../controllers/home/socialNetworksController');
+const {
+  getPersonContact,
+  getPersonContacts,
+  getPersonPhoto,
+} = require('../controllers/home/personContactController');
 
 homeRouter.post('/calculate', postCalculation);
 homeRouter.get('/calculate', getCalculation);
 homeRouter.post('/send-mail', postSendToMail);
 homeRouter.post('/img', postFileSandToMail);
+homeRouter.get('/contact', getContact);
+homeRouter.get('/contacts', getContacts);
+homeRouter.get('/social-networks', getSocialNetworks);
+homeRouter.get('/our-teame', getPersonContacts);
+homeRouter.get('/our-teame-img', getPersonPhoto);
+homeRouter.get('/person-contact', getPersonContact);
 
 module.exports = homeRouter;

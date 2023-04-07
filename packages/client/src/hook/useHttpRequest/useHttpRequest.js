@@ -1,45 +1,43 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import axios from 'axios';
 
-const usuallyRequest = async (method, url, body, headers) => {
-  const hasHeader = headers || { 'Content-type': 'application/json; charset=utf-8' };
-
-  return fetch(url, {
+const fileRequest = (method, url) =>
+  axios(url, {
     method,
-    headers: hasHeader,
-    body,
+    responseType: 'blob',
   });
-};
+
+const request = (method, url, data, headers) =>
+  axios(url, {
+    method,
+    headers,
+    data,
+  });
 
 const useHttpRequest = () => {
-  const [responsetData, setResponsetData] = useState({ data: null, error: '' });
-  const [requestState, setRequestState] = useState({
-    method: '',
-    url: '',
-    body: '',
-    headers: '',
-  });
+  const [responsetData, setResponsetData] = useState({ data: null, error: '', file: null });
 
-  useEffect(() => {
-    if (requestState.method && requestState.url) {
-      usuallyRequest(requestState.method, requestState.url, requestState.body, requestState.headers)
-        .then((response) => response.json())
-        .then((response) => {
-          setResponsetData({ ...responsetData, data: response });
-        })
-        .catch((err) => {
-          // eslint-disable-next-line no-console
-          console.error('🚀 ~ file: useHttpRequest.js:36 err:', err);
-          setResponsetData({ ...responsetData, error: err.massage });
-        });
+  const getRequestFile = async (method, url) => {
+    const reader = new FileReader();
+    const response = await fileRequest(method, url);
+    try {
+      reader.onload = () => setResponsetData({ ...responsetData, file: reader.result });
+      reader.readAsDataURL(response.data);
+    } catch (err) {
+      setResponsetData({ ...responsetData, error: err.massage });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requestState]);
-
-  const httpRequest = (method, url, body, headers) => {
-    setRequestState({ method, url, body, headers });
   };
 
-  return { responsetData, httpRequest };
+  const httpRequest = async (method, url, data, headers) => {
+    const response = await request(method, url, data, headers);
+    try {
+      setResponsetData({ ...responsetData, data: response.data });
+    } catch (err) {
+      setResponsetData({ ...responsetData, error: err.massage });
+    }
+  };
+
+  return { responsetData, httpRequest, getRequestFile };
 };
 
 export default useHttpRequest;

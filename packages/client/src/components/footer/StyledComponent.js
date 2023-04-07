@@ -7,6 +7,26 @@ const FooterStyle = styled('div')`
   color: white;
   font-size: 11px;
 
+  .iconButtons {
+    color: #eb1921;
+  }
+
+  .icons {
+    color: white;
+    font-size: 58px;
+  }
+
+  .buttonColor {
+    background: #eb1921;
+  }
+
+  .formBox {
+    background: white;
+    padding: 16px;
+    border-radius: 5px;
+    max-width: 200px;
+  }
+
   .backgroundGrid {
     min-height: 250px;
 

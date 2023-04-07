@@ -25,6 +25,22 @@ const {
   getAdminCalculatorSelectLocationSettings,
   deleteAdminCalculatorSelectLocationSettings,
 } = require('../controllers/admin/adminCalculatorSelectLocationSettingsControllers');
+const {
+  postContact,
+  putContact,
+  deleteContact,
+} = require('../controllers/admin/adminContactsController');
+const {
+  postSocialNetwork,
+  deleteSocialNetwork,
+} = require('../controllers/admin/adminSocalNetworksController');
+const {
+  postPersonContact,
+  deletePersonContact,
+  postPersonContactPhoto,
+  putPersonContact,
+  deletePersonContactPhoto,
+} = require('../controllers/admin/adminCreatePersonContactController');
 
 const AdminRouter = Router();
 
@@ -63,5 +79,15 @@ AdminRouter.get(
 AdminRouter.post('/auth', postAdminAuth);
 AdminRouter.get('/auth', getAdminAuth);
 AdminRouter.post('/token', postToken);
+AdminRouter.post('/contact', postContact);
+AdminRouter.put('/contact', putContact);
+AdminRouter.delete('/contact', deleteContact);
+AdminRouter.post('/social-network', postSocialNetwork);
+AdminRouter.delete('/social-network', deleteSocialNetwork);
+AdminRouter.post('/person-contact-img', postPersonContactPhoto);
+AdminRouter.delete('/person-contact-img', deletePersonContactPhoto);
+AdminRouter.post('/person-contact', postPersonContact);
+AdminRouter.put('/person-contact', putPersonContact);
+AdminRouter.delete('/person-contact', deletePersonContact);
 
 module.exports = AdminRouter;

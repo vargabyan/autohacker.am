@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { useSelector, useDispatch } from 'react-redux';
@@ -20,25 +20,40 @@ import { useTranslation } from 'react-i18next';
 import { DrawerAppBarStyle, DrawerChildrenElementStyle, TelephonNumberLineStyle } from './indexStyles';
 import { IconBsCalculatorFill, IconIoIosCall } from './icons';
 import { logout } from '../../reducers/authentication';
-import { data_Contacts } from '../footer/address';
 import LanguageSelection from './LanguageSelection';
+import useHttpRequest from '../../hook/useHttpRequest/useHttpRequest';
 
-const PhoneNumber = data_Contacts.map((index) => (
-  <Grid item key={`key_${index.phone}`}>
-    <Grid container spacing={1}>
-      <Grid item>
-        <IconIoIosCall />
-      </Grid>
-      <Grid item>
-        <a href={`tel:${index.phone}`}>
-          <Typography variant='p' color='primary'>
-            {index.phone}
-          </Typography>
-        </a>
+const PhoneNumber = () => {
+  const { responsetData, httpRequest } = useHttpRequest();
+  const [dataContacts, setDataContacts] = useState([]);
+
+  useEffect(() => {
+    httpRequest('get', '/contacts');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (responsetData.data?.contacts) {
+      setDataContacts(responsetData.data.contacts);
+    }
+  }, [responsetData.data]);
+
+  return dataContacts.map((index) => (
+    <Grid item key={index._id}>
+      <Grid container spacing={1}>
+        <Grid item>
+          <IconIoIosCall />
+        </Grid>
+        <Grid item>
+          <a href={`tel:${index.phone}`}>
+            <Typography variant='p' color='primary'>
+              {index.phone}
+            </Typography>
+          </a>
+        </Grid>
       </Grid>
     </Grid>
-  </Grid>
-));
+  ));
+};
 
 const TelephonNumberLine = () => {
   const { t } = useTranslation();
@@ -50,7 +65,7 @@ const TelephonNumberLine = () => {
             <Grid item>
               <Typography variant='p'>{t('nab_bar.telephon')}</Typography>
             </Grid>
-            {PhoneNumber}
+            <PhoneNumber />
           </Grid>
         </Grid>
       </Grid>

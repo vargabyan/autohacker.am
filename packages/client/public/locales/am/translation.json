@@ -74,7 +74,17 @@
     "part2": "Եթե ցանկանում եք, որ մասնագետը կապ հաստատի Ձեզ, կարող եք թողնել Ձեր տվյալները՝ լրացնելով հայտը։"
   },
   "our_team": {
-    "header": "Ավելացրեք աշխատող"
+    "header": "Ավելացրեք աշխատող",
+    "add_new_Employee_contacts": {
+      "add_contact_items": "Ավելացնել կոնտակտ",
+      "photo": "լուսանկար",
+      "fullname": "Անուն Ազգանուն",
+      "job_title": "մասնագիտությունը",
+      "email": "էլ․ փոստ",
+      "phone": "Հեռ․",
+      "select_language": "ընտրել լեզուն"
+    },
+    "button": { "save": "Պահպանել", "cancel": "չեղարկել" }
   },
   "nab_bar": {
     "nav_link": {
@@ -91,8 +101,20 @@
   },
   "footer": {
     "header": "ԿԱՊ",
-    "add_spcial_networkt_items": "Ավելացնել սոցիալական ցանց",
-    "add_contact_items": "Ավելացնել կոնտակտ"
+    "contacts": {
+      "add_contact_items": "Ավելացնել կոնտակտ",
+      "address": "հասցե",
+      "email": "էլ․ փոստ",
+      "phone": "Հեռ․",
+      "select_language": "ընտրել լեզուն"
+    },
+    "social_networks": {
+      "header": "Հետևեք մեր թարմացումներին սոցցանցերում",
+      "add_social_network_items": "Ավելացնել սոցիալական ցանց",
+      "select_social_networks": "ընտրել սոց․ ցանց",
+      "url": "(url) հղում"
+    },
+    "button": { "save": "Պահպանել", "cancel": "չեղարկել" }
   },
   "calculate": {
     "header": "Ադմինիստրատորի կարգավորումներ",

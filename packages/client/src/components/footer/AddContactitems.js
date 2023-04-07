@@ -1,68 +1,139 @@
-import React, { useState } from 'react';
-import { Grid, Typography, Button, TextField } from '@mui/material';
-import { Box } from '@mui/system';
-import Fab from '@mui/material/Fab';
+import React, { useEffect, useState } from 'react';
+import {
+  Grid,
+  Typography,
+  Button,
+  TextField,
+  IconButton,
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import useHttpRequest from '../../hook/useHttpRequest/useHttpRequest';
 
 const initialValues = {
-  address: '',
+  address: {
+    am: '',
+    en: '',
+    ru: '',
+  },
   email: '',
   phone: '',
 };
 
 const validationSchema = yup.object({
-  address: yup
-    .string('Enter your address')
-    .min(2, 'address should be of minimum 1 characters length')
-    .required('address is required'),
-  email: yup.string('Enter your email').email('Enter a valid email').required('Email is required'),
-  phone: yup
-    .string('Enter your phone')
-    .min(10, 'phone should be of minimum 10 characters length')
-    .required('phone is required'),
+  address: yup.object({
+    am: yup.string().min(2).required(),
+    en: yup.string().min(2).required(),
+    ru: yup.string().min(2).required(),
+  }),
+  email: yup.string().email().required(),
+  phone: yup.string().min(9).required(),
 });
 
-const AddContactitems = ({ auth }) => {
+const AddContactitems = ({ updataContact }) => {
+  const auth = useSelector((state) => state.authenticationReducer.value);
+  const { responsetData, httpRequest } = useHttpRequest();
   const [switchState, setSwitchState] = useState(false);
+  const [selectLanguage, setSelectLanguage] = useState('am');
+  const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit(values) {
-      alert(JSON.stringify(values, null, 2));
+      if (values._id) {
+        httpRequest('put', '/admin/contact', JSON.stringify(values));
+      } else {
+        httpRequest('post', '/admin/contact', JSON.stringify(values));
+      }
     },
   });
 
-  const handelClick = (param) => {
+  const handleSelectChange = (e) => {
+    const { value } = e.target;
+
+    setSelectLanguage(value);
+  };
+
+  const handleOpenClose = () => {
+    setOpen((values) => !values);
+  };
+
+  const handleChange = (e) => {
+    const { value } = e.target;
+
+    formik.setValues((values) => {
+      const { address } = values;
+      address[selectLanguage] = value;
+
+      return { ...values, address };
+    });
+  };
+
+  const handelActions = (param) => {
     setSwitchState((item) => !item);
     if (param === 'cancel') {
-      formik.resetform(initialValues);
+      formik.resetForm();
     }
   };
 
+  useEffect(() => {
+    if (updataContact?.contact) {
+      formik.setValues(() => updataContact.contact);
+      handelActions();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updataContact]);
+  useEffect(() => {
+    if (responsetData.data) {
+      formik.resetForm();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [responsetData.data]);
+
   const formForAdd = (
-    <Box
-      sx={{
-        background: 'white',
-        padding: '16px',
-        borderRadius: '5px',
-        maxWidth: '200px',
-      }}
-    >
+    <Box className='formBox'>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel size='small'>{t('footer.contacts.select_language')}</InputLabel>
+              <Select
+                size='small'
+                open={open}
+                onClose={handleOpenClose}
+                onOpen={handleOpenClose}
+                value={selectLanguage}
+                label={t('footer.contacts.select_language')}
+                onChange={handleSelectChange}
+              >
+                <MenuItem value='am'>հա</MenuItem>
+                <MenuItem value='en'>en</MenuItem>
+                <MenuItem value='ru'>ру</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
               size='small'
               name='address'
-              label='address'
-              value={formik.values.address}
-              onChange={formik.handleChange}
-              error={Boolean(formik.touched.address) && Boolean(formik.errors.address)}
-              helperText={formik.touched.address && formik.errors.address}
+              label={t('footer.contacts.address')}
+              value={formik.values.address[selectLanguage]}
+              onChange={handleChange}
+              error={
+                Boolean(formik.touched.address?.[selectLanguage]) && Boolean(formik.errors.address?.[selectLanguage])
+              }
+              helperText={formik.touched.address?.[selectLanguage] && formik.errors.address?.[selectLanguage]}
             />
           </Grid>
           <Grid item xs={12}>
@@ -70,7 +141,7 @@ const AddContactitems = ({ auth }) => {
               fullWidth
               size='small'
               name='email'
-              label='email'
+              label={t('footer.contacts.email')}
               value={formik.values.email}
               onChange={formik.handleChange}
               error={Boolean(formik.touched.email) && Boolean(formik.errors.email)}
@@ -82,8 +153,7 @@ const AddContactitems = ({ auth }) => {
               fullWidth
               size='small'
               name='phone'
-              label='phone'
-              // type="tel"
+              label={t('footer.contacts.phone')}
               value={formik.values.phone}
               onChange={formik.handleChange}
               error={Boolean(formik.touched.phone) && Boolean(formik.errors.phone)}
@@ -93,25 +163,18 @@ const AddContactitems = ({ auth }) => {
           <Grid item xs={6} md={12} lg={6}>
             <Button
               size='small'
-              onClick={() => handelClick('cancel')}
+              onClick={() => handelActions('cancel')}
               color='primary'
               variant='contained'
               fullWidth
-              style={{ background: '#eb1921' }}
+              className='buttonColor'
             >
-              cancel
+              {t('footer.button.cancel')}
             </Button>
           </Grid>
           <Grid item xs={6} md={12} lg={6}>
-            <Button
-              size='small'
-              color='primary'
-              variant='contained'
-              fullWidth
-              type='submit'
-              style={{ background: '#eb1921' }}
-            >
-              Submit
+            <Button size='small' color='primary' variant='contained' fullWidth type='submit' className='buttonColor'>
+              {t('footer.button.save')}
             </Button>
           </Grid>
         </Grid>
@@ -124,16 +187,16 @@ const AddContactitems = ({ auth }) => {
       <Grid item xs={12}>
         <Grid container justifyContent='center'>
           <Grid item>
-            <Typography variant='p'>Ավելացնել կոնտակտ</Typography>
+            <Typography variant='p'>{t('footer.contacts.add_contact_items')}</Typography>
           </Grid>
         </Grid>
       </Grid>
       <Grid item>
         <Grid container justifyContent='center'>
           <Grid item xs={12}>
-            <Fab onClick={handelClick} color='primary' aria-label='add' size='small' style={{ background: '#eb1921' }}>
-              <AddIcon />
-            </Fab>
+            <IconButton onClick={handelActions} aria-label='add' size='small'>
+              <AddIcon fontSize='inherit' className='iconButtons' />
+            </IconButton>
           </Grid>
         </Grid>
       </Grid>
