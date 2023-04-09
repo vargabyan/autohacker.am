@@ -35,7 +35,7 @@ const EmployeeContactDetails = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
 
-  const handelActions = (action, person) => {
+  const handleActions = (action, person) => {
     if (action === 'delete') {
       httpRequest('delete', '/admin/person-contact', { id: person._id });
       httpRequest('delete', '/admin/person-contact-img', { filename: person.filename });
@@ -90,12 +90,12 @@ const EmployeeContactDetails = () => {
         <Grid item xs={12} sm={12} sx={{ display: auth ? 'block' : 'none' }}>
           <Grid container spacing={3} justifyContent='center'>
             <Grid item>
-              <IconButton aria-label='delete' onClick={() => handelActions('delete', index)} size='small'>
+              <IconButton aria-label='delete' onClick={() => handleActions('delete', index)} size='small'>
                 <DeleteForeverIcon fontSize='inherit' className='iconButtons' />
               </IconButton>
             </Grid>
             <Grid item>
-              <IconButton aria-label='edit' onClick={() => handelActions('edit', index)} size='small'>
+              <IconButton aria-label='edit' onClick={() => handleActions('edit', index)} size='small'>
                 <EditIcon fontSize='inherit' className='iconButtons' />
               </IconButton>
             </Grid>

@@ -24,7 +24,6 @@ export const SearchItemStyle = styled('div')`
 
 export const FilterItemStyle = styled('div')`
   background: #e6e7e8;
-  height: 44px;
 
   button {
     padding: 0;
@@ -59,9 +58,4 @@ export const FilterItemStyle = styled('div')`
     height: 100%;
     border-radius: 5px;
   }
-`;
-
-export const ListItemStyle = styled('div')`
-  /* max-width: 325px; */
-  /* position: relative; */
 `;

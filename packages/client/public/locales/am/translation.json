@@ -215,5 +215,11 @@
       "orderACall": "Պատվիրել զանգ"
     },
     "snackbar": { "part1": "հաղորդագրությունը ուղարկված է", "part2": "Լրացրեք բոլոր բաց թողնված վանդակները" }
+  },
+  "goods": {
+    "header": "Կատալոգ",
+    "input-placeholder": "Որոնել",
+    "status-button": { "at-auction": "Աճուրդում", "on-the-way": "Ճանապարհին", "in-armenia": "ՀՀ-ում" },
+    "button-learn-more": "Իմանալ Ավելին"
   }
 }

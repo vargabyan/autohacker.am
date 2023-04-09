@@ -28,7 +28,12 @@ exports.deletePersonContactPhoto = async (request, response) => {
 
   try {
     fs.unlinkSync(
-      path.join(__dirname, '../../', 'uploads', 'personContactPhoto', filename)
+      path.join(
+        __dirname,
+        '../../',
+        UPLOAD_FOLDER_PERSON_CONTACT_PHOTO,
+        filename
+      )
     );
     response.sendStatus(204);
   } catch (error) {
@@ -57,7 +62,6 @@ exports.putPersonContact = async (request, response) => {
 
   const { _id, photo, fullname, jobTitle, email, phone, filename } =
     request.body;
-  console.log('request.body=>', request.body);
   const result = await AdminPersonContact.findByIdAndUpdate(_id, {
     photo,
     filename,

@@ -16,6 +16,7 @@ import Layout from './Layout';
 import useHttpRequest from './hook/useHttpRequest/useHttpRequest';
 import { login } from './reducers/authentication';
 import CreatePersonContacts from './components/our_team/createPersoncontacts';
+import CreateProduct from './components/goods/creatProduct';
 
 const App = () => {
   const { i18n } = useTranslation();
@@ -43,6 +44,12 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [responsetData.data]);
 
+  const createProductRoute = auth ? (
+    <Route path='create-product' element={<CreateProduct />}>
+      <Route path=':product' element={<CreateProduct />} />
+      <Route path='*' element={<Navigate to='/404' />} />
+    </Route>
+  ) : undefined;
   const createPersonContactsRoute = auth ? (
     <Route path='create_person_contacts' element={<CreatePersonContacts />}>
       <Route path=':person' element={<CreatePersonContacts />} />
@@ -64,9 +71,14 @@ const App = () => {
           <Route path='our_team' element={<OurTeam />} />
           <Route path='services' element={<Services />} />
           <Route path='order_a_call' element={<GetCallBack />} />
+          <Route path='show-product' element={<ShowProduct />}>
+            <Route path=':product' element={<ShowProduct />} />
+            <Route path='*' element={<Navigate to='/404' />} />
+          </Route>
           {adminRoute}
           {createPersonContactsRoute}
-          <Route path='*' element={<Navigate to='/404' />} />
+          {createProductRoute}
+          {/* <Route path='*' element={<Navigate to='/404' />} /> */}
         </Route>
         <Route path='/404' element={<Error />} />
       </Routes>

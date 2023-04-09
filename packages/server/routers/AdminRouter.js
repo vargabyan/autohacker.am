@@ -41,6 +41,11 @@ const {
   putPersonContact,
   deletePersonContactPhoto,
 } = require('../controllers/admin/adminCreatePersonContactController');
+const {
+  deleteProduct,
+  putProduct,
+  postProduct,
+} = require('../controllers/admin/adminCreateProductController');
 
 const AdminRouter = Router();
 
@@ -89,5 +94,8 @@ AdminRouter.delete('/person-contact-img', deletePersonContactPhoto);
 AdminRouter.post('/person-contact', postPersonContact);
 AdminRouter.put('/person-contact', putPersonContact);
 AdminRouter.delete('/person-contact', deletePersonContact);
+AdminRouter.delete('/product', deleteProduct);
+AdminRouter.put('/product', putProduct);
+AdminRouter.post('/product', postProduct);
 
 module.exports = AdminRouter;
